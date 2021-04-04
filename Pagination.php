@@ -3,8 +3,8 @@
 
 class Pagination
 {
-    private static int $countRowOnPage = 10;
-    private static int $numCurrentPage = 0;
+    private static int $countRowOnPage = 1;
+    private static int $numCurrentPage = 1;
 
 
     public static function getNumCurrentPage(): int
@@ -13,7 +13,7 @@ class Pagination
     }
     public static function setNumCurrentPage(int $numCurrentPage): void
     {
-        if($numCurrentPage < 0)
+        if($numCurrentPage <= 0)
             self::$numCurrentPage = 0;
         else
             self::$numCurrentPage = $numCurrentPage;

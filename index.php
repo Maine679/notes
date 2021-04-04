@@ -22,6 +22,7 @@ if($button_exit) {
         $newUser->authorization("", "", $_SESSION['user_id']);
     }
 }
+    
 
 if(empty($button_back) || !empty($button_exit)) {
     $login = $_POST['login'];
@@ -118,6 +119,13 @@ if(!$newUser->getAuthorized()) {
 
     $noteObj = new Notes();
 
+    $iSetPage = $_POST['button_page'];
+    if($iSetPage >= 0)
+        $pagObj::setNumCurrentPage((int)$iSetPage);
+
+
+
+
     //Всего записей
     echo "<br> Всего записей " . $iCountNote = $pagObj->getCountNotes($ioNoteDB,$newUser->getUserId()); //общее количество записей
 
@@ -129,77 +137,21 @@ if(!$newUser->getAuthorized()) {
     $arrNoteObj = $noteObj->readAllNotes($ioNoteDB,$newUser->getUserId()); //Получили данные обо всех заметках.
 //    $noteObj->getPreview();
 
-    /*
-    echo "<br><br>";
-    var_dump($arrNoteObj);
     echo "<br><br>";
 
-    foreach ($arrNoteObj as $key => $valNoteObj) {
-
-        echo "<br> Title " . $valNoteObj->getTitle();
-        echo "<br> Preview " . $valNoteObj->getPreview();
-        echo "<br>";
-
-    }
-    */
-
-    //Здесь будет расчитывать сколько у нас страниц и какая сейчас из скольки.
     $iIterator = min($iPage * $iCountOnPage, $iCountNote); // 2
     $iStart = $iIterator - ($iIterator % $iCountOnPage);
     $iEnd = min($iStart + $iCountOnPage, $iCountNote);
     $iPage = floor($iStart / $iCountOnPage);
 
-    for($showNoteObj = new ShowNoteWeb(),$i = $iIterator;$i<$iEnd;$i++) {
+
+    $showNoteObj = new ShowNoteWeb();
+    for($i = $iIterator;$i<$iEnd;$i++) {
         $showNoteObj->printNotesPreview($arrNoteObj[$i]);
     }
 
-    /*
-        $iIterator = $iStart;
-        $iCount = count($arrSaveCategory);
-        $iEnd = min($iEnd,$iCount);
-
-
-        //Здесь мы выводим нужное.
-        for($i = $iIterator;$i<$iEnd;$i++) {
-            // $rowProduct = $arrSaveCategory[$i]; //Получаем данные из массива.
-
-            $category_id = $arrSaveCategory[$i]['category_id'];
-            $category_parent = $arrSaveCategory[$i]['category_parent'];
-            $iParrentCatSave = $category_parent;
-            $category_name = $arrSaveCategory[$i]['category_name'];
-            $category_product_count = $arrSaveCategory[$i]['category_product_count'];
-            $category_price_min = $arrSaveCategory[$i]['category_price_min'];
-            $category_price_max = $arrSaveCategory[$i]['category_price_max'];
-
-            if($category_product_count <= 0 || $category_product_count == NULL)
-                $arrAllProduct[$Iterator++][0] =array('text' => $category_name, 'callback_data' => "all_product 0 0 $category_id -1");
-            else
-                $arrAllProduct[$Iterator++][0] =array('text' => $category_name, 'callback_data' => "product_info $category_id 0 none");
-        }
-
-    }
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//    $newNote = new Notes();
-//    echo "<br><br>count notes " . $newNote->getCountNotes($db = new IONotesDataDB(),$newUser->getUserId());
-
-
-
-
-
+    if($iAllPage > 0)
+        $showNoteObj->showPagination($noteObj,$pagObj,$ioNoteDB,$newUser->getUserId());
 
 }
 
